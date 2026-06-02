@@ -4,12 +4,12 @@
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "256",
   "memory": "512",
-  "executionRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/ecsTaskExecutionRole",
-  "taskRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/ecsTaskRole",
+  "executionRoleArn": "arn:aws:iam::338365424002:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::338365424002:role/ecsTaskRole",
   "containerDefinitions": [
     {
       "name": "clothing-crm",
-      "image": "<ECR_REGISTRY>/clothing-crm:latest",
+      "image": "338365424002.dkr.ecr.us-east-1.amazonaws.com/clothing-crm:latest",
       "essential": true,
       "portMappings": [
         {
@@ -24,19 +24,19 @@
       "secrets": [
         {
           "name": "MONGO_URI",
-          "valueFrom": "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/clothing-crm/MONGO_URI"
+          "valueFrom": "arn:aws:ssm:us-east-1:338365424002:parameter/clothing-crm/MONGO_URI"
         },
         {
           "name": "JWT_SECRET",
-          "valueFrom": "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/clothing-crm/JWT_SECRET"
+          "valueFrom": "arn:aws:ssm:us-east-1:338365424002:parameter/clothing-crm/JWT_SECRET"
         },
         {
           "name": "JWT_EXPIRES_IN",
-          "valueFrom": "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/clothing-crm/JWT_EXPIRES_IN"
+          "valueFrom": "arn:aws:ssm:us-east-1:338365424002:parameter/clothing-crm/JWT_EXPIRES_IN"
         },
         {
           "name": "CLIENT_ORIGIN",
-          "valueFrom": "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/clothing-crm/CLIENT_ORIGIN"
+          "valueFrom": "arn:aws:ssm:us-east-1:338365424002:parameter/clothing-crm/CLIENT_ORIGIN"
         }
       ],
       "healthCheck": {
@@ -53,7 +53,7 @@
         "logDriver": "awslogs",
         "options": {
           "awslogs-group": "/ecs/clothing-crm",
-          "awslogs-region": "<REGION>",
+          "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "ecs"
         }
       }
