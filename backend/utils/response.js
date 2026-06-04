@@ -1,8 +1,9 @@
-// Consistent API response helpers used across all controllers
-const ok = (res, data, meta) => {
+const ok = (res, data, statusOrMeta) => {
+  const status = typeof statusOrMeta === 'number' ? statusOrMeta : 200;
+  const meta = typeof statusOrMeta === 'object' ? statusOrMeta : undefined;
   const payload = { success: true, data };
   if (meta) payload.meta = meta;
-  return res.json(payload);
+  return res.status(status).json(payload);
 };
 
 const fail = (res, status, message, code) => {

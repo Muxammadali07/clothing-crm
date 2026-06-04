@@ -7,10 +7,10 @@ const signToken = (user) =>
     expiresIn: process.env.JWT_EXPIRES_IN || '7d',
   });
 
-// POST /api/v1/auth/register — creates a client account
+// POST /api/v1/auth/register — manager-only: create admin accounts
 exports.register = async (req, res, next) => {
   try {
-    const { name, email, password, companyName, phone } = req.body;
+    const { name, email, password, role } = req.body;
     if (!name || !email || !password)
       return fail(res, 400, 'Name, email and password are required');
 
@@ -20,10 +20,8 @@ exports.register = async (req, res, next) => {
     const user = await User.create({
       name,
       email,
-      passwordHash: password, // pre-save hook hashes it
-      companyName,
-      phone,
-      role: 'client',
+      passwordHash: password,
+      role: role === 'manager' ? 'manager' : 'admin',
     });
 
     const token = signToken(user);
