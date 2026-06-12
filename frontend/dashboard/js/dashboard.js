@@ -114,7 +114,7 @@ const NAV_ITEMS = [
   { id: 'customers',     label: 'Customers',    roles: ['manager','admin'],   icon: svgPeople() },
   { id: 'leads',         label: 'Leads',        roles: ['manager','admin'],   icon: svgFunnel() },
   { id: 'opportunities', label: 'Opportunities',roles: ['manager','admin'],   icon: svgBriefcase() },
-  { id: 'activities',    label: 'Activities',   roles: ['manager','admin'],   icon: svgCalCheck() },
+  { id: 'remodules',     label: 'Remodule',     roles: ['manager','admin'],   icon: svgCalCheck() },
   { id: 'inventory',     label: 'Inventory',    roles: ['manager','admin'],   icon: svgBox() },
   { id: 'reports',       label: 'Reports',      roles: ['manager','admin'],   icon: svgChart() },
   { id: 'divider',       label: '',             roles: ['manager'],           divider: true },
@@ -148,7 +148,7 @@ function buildNav() {
 /* ─── Navigation ─────────────────────────────────────────────────────────── */
 const PAGE_TITLES = {
   dashboard: 'Dashboard', customers: 'Customers', leads: 'Leads',
-  opportunities: 'Opportunities', activities: 'Activities',
+  opportunities: 'Opportunities', remodules: 'Remodule',
   inventory: 'Inventory', reports: 'Reports', profile: 'Profile',
   users: 'Team Members', 'audit-logs': 'Audit Logs',
 };
@@ -177,7 +177,7 @@ const PAGES = {
   customers:     renderCustomers,
   leads:         renderLeads,
   opportunities: renderOpportunities,
-  activities:    renderActivities,
+  remodules:     renderRemodules,
   inventory:     renderInventory,
   reports:       renderReports,
   profile:       renderProfile,
@@ -669,17 +669,17 @@ async function saveOpp(id) {
   } catch(e) { toast(e.message, 'error'); }
 }
 
-/* ─── Activities ─────────────────────────────────────────────────────────── */
-async function renderActivities() {
-  const { data } = await api.get('/activities');
-  state.activities = data.activities;
+/* ─── Remodule ───────────────────────────────────────────────────────────── */
+async function renderRemodules() {
+  const { data } = await api.get('/remodules');
+  state.remodules = data.remodules;
   $('#content').innerHTML = `
     <div class="section-header">
       <div>
-        <h1 class="section-title">Activities</h1>
+        <h1 class="section-title">Remodule</h1>
         <p class="section-sub">Calls, emails, meetings & tasks</p>
       </div>
-      <button class="btn btn-primary" onclick="openActivityModal()">${svgPlus()} Log Activity</button>
+      <button class="btn btn-primary" onclick="openRemoduleModal()">${svgPlus()} Log Remodule</button>
     </div>
     <div class="table-wrap">
       <div class="table-responsive">
@@ -688,37 +688,37 @@ async function renderActivities() {
             <th>Type</th><th>Note</th><th>Due Date</th>
             <th>Completed</th><th>Owner</th><th>Actions</th>
           </tr></thead>
-          <tbody>${buildActivityRows(data.activities)}</tbody>
+          <tbody>${buildRemoduleRows(data.remodules)}</tbody>
         </table>
       </div>
     </div>`;
 }
 
-function buildActivityRows(list) {
-  if (!list.length) return `<tr><td colspan="6"><div class="empty-state">${svgCalCheck()}<h3>No activities yet</h3></div></td></tr>`;
+function buildRemoduleRows(list) {
+  if (!list.length) return `<tr><td colspan="6"><div class="empty-state">${svgCalCheck()}<h3>No remodules yet</h3></div></td></tr>`;
   return list.map(a => `
     <tr>
       <td>${pill(a.type)}</td>
       <td>${a.note || '—'}</td>
       <td class="td-muted">${fmtDate(a.dueDate)}</td>
       <td>
-        <div class="check-toggle ${a.completed ? 'checked' : ''}" onclick="toggleActivity('${a._id}', ${!a.completed})"></div>
+        <div class="check-toggle ${a.completed ? 'checked' : ''}" onclick="toggleRemodule('${a._id}', ${!a.completed})"></div>
       </td>
       <td class="td-muted">${a.owner?.name || '—'}</td>
-      <td><div class="td-actions">${actionBtns(`openActivityModal('${a._id}')`, `deleteRecord('activities','${a._id}','Activity','renderActivities')`)}</div></td>
+      <td><div class="td-actions">${actionBtns(`openRemoduleModal('${a._id}')`, `deleteRecord('remodules','${a._id}','Remodule','renderRemodules')`)}</div></td>
     </tr>`).join('');
 }
 
-async function toggleActivity(id, completed) {
+async function toggleRemodule(id, completed) {
   try {
-    await api.patch(`/activities/${id}`, { completed });
-    await renderActivities();
+    await api.patch(`/remodules/${id}`, { completed });
+    await renderRemodules();
   } catch(e) { toast(e.message, 'error'); }
 }
 
-async function openActivityModal(id) {
-  const a = id ? state.activities.find(x => x._id === id) : null;
-  openModal(id ? 'Edit Activity' : 'Log Activity', `
+async function openRemoduleModal(id) {
+  const a = id ? state.remodules.find(x => x._id === id) : null;
+  openModal(id ? 'Edit Remodule' : 'Log Remodule', `
     <div class="form-grid">
       <div class="form-group">
         <label class="form-label">Type *</label>
@@ -736,22 +736,22 @@ async function openActivityModal(id) {
       <textarea class="form-control" id="f-note" rows="3">${a?.note || ''}</textarea>
     </div>`,
     `<button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-     <button class="btn btn-primary" onclick="saveActivity('${id || ''}')">Save</button>`
+     <button class="btn btn-primary" onclick="saveRemodule('${id || ''}')">Save</button>`
   );
 }
 
-async function saveActivity(id) {
+async function saveRemodule(id) {
   const body = {
     type: $('#f-type').value,
     note: $('#f-note').value.trim(),
     dueDate: $('#f-dueDate').value || undefined,
   };
   try {
-    if (id) await api.patch(`/activities/${id}`, body);
-    else await api.post('/activities', body);
-    toast(id ? 'Activity updated' : 'Activity logged');
+    if (id) await api.patch(`/remodules/${id}`, body);
+    else await api.post('/remodules', body);
+    toast(id ? 'Remodule updated' : 'Remodule logged');
     closeModal();
-    await renderActivities();
+    await renderRemodules();
   } catch(e) { toast(e.message, 'error'); }
 }
 
@@ -877,7 +877,7 @@ async function renderReports() {
       ${kpiCard('Total Customers', data.totalCustomers, svgPeople(), '#f59e0b', 'rgba(245,158,11,0.1)', 'up')}
       ${kpiCard('Total Leads', data.totalLeads, svgFunnel(), '#fb923c', 'rgba(251,146,60,0.1)', 'neutral')}
       ${kpiCard('Revenue (Won)', fmtCurrency(data.totalRevenue), svgCoin(), '#22c55e', 'rgba(34,197,94,0.1)', 'up')}
-      ${kpiCard('Open Activities', data.followUpTasks, svgCalCheck(), '#6366f1', 'rgba(99,102,241,0.1)', 'neutral')}
+      ${kpiCard('Open Remodules', data.followUpTasks, svgCalCheck(), '#6366f1', 'rgba(99,102,241,0.1)', 'neutral')}
     </div>
     <div class="charts-grid">
       <div class="chart-card">

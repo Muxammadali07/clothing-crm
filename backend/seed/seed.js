@@ -4,7 +4,7 @@ const User = require('../models/User');
 const Customer = require('../models/Customer');
 const Lead = require('../models/Lead');
 const Opportunity = require('../models/Opportunity');
-const Activity = require('../models/Activity');
+const Remodule = require('../models/Remodule');
 const InventoryItem = require('../models/InventoryItem');
 const AuditLog = require('../models/AuditLog');
 
@@ -17,7 +17,7 @@ async function seed() {
     Customer.deleteMany({}),
     Lead.deleteMany({}),
     Opportunity.deleteMany({}),
-    Activity.deleteMany({}),
+    Remodule.deleteMany({}),
     InventoryItem.deleteMany({}),
     AuditLog.deleteMany({}),
   ]);
@@ -65,14 +65,14 @@ async function seed() {
   ]);
   console.log('Opportunities seeded.');
 
-  await Activity.insertMany([
+  await Remodule.insertMany([
     { type: 'call', note: 'Discussed Q3 pricing', relatedTo: customers[0]._id, relatedModel: 'Customer', dueDate: new Date('2026-06-10'), completed: false, owner: admin._id },
     { type: 'email', note: 'Sent proposal PDF', relatedTo: opps[0]._id, relatedModel: 'Opportunity', dueDate: new Date('2026-06-08'), completed: true, owner: admin._id },
     { type: 'meeting', note: 'Intro call scheduled', relatedTo: leads[0]._id, relatedModel: 'Lead', dueDate: new Date('2026-06-12'), completed: false, owner: admin._id },
     { type: 'task', note: 'Prepare contract draft', relatedTo: opps[1]._id, relatedModel: 'Opportunity', dueDate: new Date('2026-06-07'), completed: false, owner: manager._id },
     { type: 'call', note: 'Follow-up on winter range', relatedTo: customers[3]._id, relatedModel: 'Customer', dueDate: new Date('2026-06-15'), completed: false, owner: admin._id },
   ]);
-  console.log('Activities seeded.');
+  console.log('Remodules seeded.');
 
   await InventoryItem.insertMany([
     { sku: 'HOD-BLK-L', productName: 'Classic Hoodie Black', category: 'Hoodies', quantity: 240, price: 28.50, createdBy: manager._id },

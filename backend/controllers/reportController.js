@@ -1,7 +1,7 @@
 const Customer = require('../models/Customer');
 const Lead = require('../models/Lead');
 const Opportunity = require('../models/Opportunity');
-const Activity = require('../models/Activity');
+const Remodule = require('../models/Remodule');
 const User = require('../models/User');
 const { ok } = require('../utils/response');
 
@@ -9,11 +9,11 @@ exports.summary = async (req, res, next) => {
   try {
     const isManager = req.user.role === 'manager';
 
-    const [totalCustomers, totalLeads, totalOpportunities, totalActivities] = await Promise.all([
+    const [totalCustomers, totalLeads, totalOpportunities, totalRemodules] = await Promise.all([
       Customer.countDocuments(isManager ? {} : { assignedTo: req.user._id }),
       Lead.countDocuments(isManager ? {} : { owner: req.user._id }),
       Opportunity.countDocuments(isManager ? {} : { owner: req.user._id }),
-      Activity.countDocuments(isManager ? {} : { owner: req.user._id }),
+      Remodule.countDocuments(isManager ? {} : { owner: req.user._id }),
     ]);
 
     // Revenue from won opportunities
@@ -73,14 +73,14 @@ exports.summary = async (req, res, next) => {
       status: { $in: ['new', 'contacted', 'qualified'] },
     });
 
-    // Pending activities (follow-up tasks)
-    const followUpTasks = await Activity.countDocuments({
+    // Pending remodules (follow-up tasks)
+    const followUpTasks = await Remodule.countDocuments({
       ...(isManager ? {} : { owner: req.user._id }),
       completed: false,
     });
 
     ok(res, {
-      totalCustomers, totalLeads, totalOpportunities, totalActivities,
+      totalCustomers, totalLeads, totalOpportunities, totalRemodules,
       totalRevenue, newCustomersThisMonth, activeLeads, followUpTasks,
       leadsByStatus, oppsByStage, customerGrowth, employeePerf,
     });
