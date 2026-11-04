@@ -175,3 +175,23 @@ clothingCompany/
 | Metrics             | Simulated in-DB telemetry       | CloudWatch Metrics + real EC2 agents     |
 
 The API is stateless (no server-side sessions), all configuration is environment-variable driven, and the frontend/backend are independently deployable — all prerequisites for a clean AWS ECS/Fargate or Elastic Beanstalk deployment.
+
+---
+
+## Graphify (optional tooling)
+
+[Graphify](https://github.com/Graphify-Labs/graphify) builds a local knowledge graph of the code for Claude Code. It is optional and not needed to run the app.
+
+```bash
+# Install the CLI (pinned). PyPI package is graphifyy (double y); the command is graphify.
+uv tool install graphifyy==0.9.102      # or: pipx install graphifyy==0.9.102
+
+# Build / rebuild the graph (code-only, local AST, no API key, no LLM)
+GRAPHIFY_BACKEND=none graphify extract . --code-only
+GRAPHIFY_BACKEND=none graphify cluster-only . --no-label   # writes GRAPH_REPORT.md
+
+# Optional: register the PreToolUse hooks locally (lands in .claude/settings.json; move it to settings.local.json)
+graphify claude install
+```
+
+Exclusions live in `.graphifyignore` (secrets, `aws/`, seed data, lockfile, and all docs/PDF/Office/images/HTML so nothing reaches an LLM). Output goes to `graphify-out/`, which is gitignored.

@@ -1,0 +1,72 @@
+# Graphify: code-only, no secrets, no client docs.
+# Read on top of .gitignore (can only exclude more). Syntax = gitignore.
+
+# Secrets, keys, certificates
+.env
+.env.*
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+*.jks
+id_rsa*
+secrets/
+credentials/
+
+# Infra config (AWS account IDs, SSM secret ARNs)
+aws/
+
+# Seed scripts (credentials / personal data) and local DB dumps
+backend/seed/
+dump/
+*.dump
+*.bson
+*.archive
+*.sql
+*.sqlite
+*.db
+
+# Dependencies, build output, generated code, lockfiles
+node_modules/
+dist/
+build/
+coverage/
+.cache/
+*.min.js
+*.map
+package-lock.json
+
+# Graphify's own output
+graphify-out/
+
+# Non-code files: never send to the semantic/LLM pass
+# (client documents such as SRS/HLD/LLD, plus all docs and media)
+*.pdf
+*.doc
+*.docx
+*.xls
+*.xlsx
+*.ppt
+*.pptx
+*.odt
+*.rtf
+*.md
+*.mdx
+*.rst
+*.txt
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.webp
+*.ico
+*.mp3
+*.mp4
+*.mov
+*.wav
+*.webm
+*.html
+*.htm

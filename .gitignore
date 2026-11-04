@@ -20,3 +20,9 @@ Thumbs.db
 # Build / cache
 dist/
 .cache/
+
+# Graphify outputs and cache (regenerable, noisy diffs)
+graphify-out/
+
+# Claude Code local settings (machine-specific graphify hook paths)
+.claude/settings.local.json
